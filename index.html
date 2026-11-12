@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Wedding Budget — Perencana Anggaran Pernikahan</title>
+
+    <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration (Custom Theme & Colors) -->
+    <script src="tailwind.config.js"></script>
+
+    <!-- Custom CSS Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="min-h-screen flex flex-col pb-24 md:pb-10 selection:bg-softpink selection:text-charcoal bg-wedding-pattern">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Top Header / Navigation (Desktop & Tablet) -->
+    <header class="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-beige-dark/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-18 py-3 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-softpink to-sage/30 flex items-center justify-center shadow-sm border border-white">
+                    <i data-lucide="heart" class="w-5 h-5 text-sage-dark fill-softpink-dark"></i>
+                </div>
+                <div>
+                    <h1 class="font-romantic text-2xl sm:text-[26px] font-bold tracking-tight text-charcoal leading-none">
+                        Our Wedding Budget
+                    </h1>
+                    <p class="text-[11px] text-charcoal-muted tracking-wider uppercase mt-0.5 font-medium">
+                        Digital Wedding Planner
+                    </p>
+                </div>
+            </div>
+
+            <!-- Desktop Navigation Pills -->
+            <nav class="hidden md:flex items-center bg-beige/80 p-1.5 rounded-2xl border border-beige-dark/50">
+                <button onclick="switchTab('dashboard')" data-tab="dashboard"
+                    class="nav-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    Dashboard
+                </button>
+                <button onclick="switchTab('budgeting')" data-tab="budgeting"
+                    class="nav-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2">
+                    <i data-lucide="pie-chart" class="w-4 h-4"></i>
+                    Anggaran
+                </button>
+                <button onclick="switchTab('transactions')" data-tab="transactions"
+                    class="nav-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2">
+                    <i data-lucide="receipt" class="w-4 h-4"></i>
+                    Transaksi
+                </button>
+                <button onclick="switchTab('savings')" data-tab="savings"
+                    class="nav-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2">
+                    <i data-lucide="piggy-bank" class="w-4 h-4"></i>
+                    Tabungan Bersama
+                </button>
+            </nav>
+
+            <!-- Settings Button -->
+            <button onclick="openSettingsModal()"
+                class="p-2.5 rounded-2xl bg-beige hover:bg-beige-dark/70 text-charcoal transition-colors flex items-center gap-2 text-sm font-medium border border-beige-dark/50"
+                title="Pengaturan Pasangan & Pernikahan">
+                <i data-lucide="settings-2" class="w-4 h-4 text-sage-dark"></i>
+                <span class="hidden sm:inline">Pengaturan</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-6 space-y-6">
+
+        <!-- ==================== TAB 1: DASHBOARD UTAMA ==================== -->
+        <section id="tab-dashboard" class="tab-content space-y-6">
+
+            <!-- Personal Couple Banner & Countdown -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-beige via-softpink-light to-sage-light border border-beige-dark/70 p-6 sm:p-8 shadow-soft">
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <!-- Couple Info -->
+                    <div class="space-y-2">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm border border-softpink text-xs font-medium text-sage-dark">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-softpink-accent"></i>
+                            <span>Menuju Hari Bahagia Kita</span>
+                        </div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <h2 id="display-couple-names" class="font-romantic text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal">
+                                Naya & Arka
+                            </h2>
+                            <button onclick="openSettingsModal()"
+                                class="p-1.5 rounded-full bg-white/70 hover:bg-white text-charcoal-muted hover:text-charcoal transition"
+                                title="Edit Nama & Tanggal">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <p class="text-sm text-charcoal-muted flex items-center gap-2">
+                            <i data-lucide="calendar-heart" class="w-4 h-4 text-softpink-accent"></i>
+                            <span id="display-wedding-date">Sabtu, 14 Agustus 2027</span>
+                            <span class="text-beige-dark">•</span>
+                            <span id="display-wedding-location" class="italic">Jakarta</span>
+                        </p>
+                    </div>
+
+                    <!-- Countdown Timer -->
+                    <div class="bg-white/85 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white shadow-sm">
+                        <p class="text-[11px] uppercase tracking-widest text-charcoal-muted font-semibold text-center mb-2.5">
+                            Hitung Mundur Pernikahan
+                        </p>
+                        <div class="grid grid-cols-3 gap-3 sm:gap-4 text-center">
+                            <div class="bg-cream rounded-xl px-3 py-2.5 border border-beige-dark/50 min-w-[72px]">
+                                <div id="cd-days" class="font-romantic text-2xl sm:text-3xl font-bold text-sage-dark tabular-nums">0</div>
+                                <div class="text-[11px] text-charcoal-muted font-medium">Hari</div>
+                            </div>
+                            <div class="bg-cream rounded-xl px-3 py-2.5 border border-beige-dark/50 min-w-[72px]">
+                                <div id="cd-hours" class="font-romantic text-2xl sm:text-3xl font-bold text-charcoal tabular-nums">0</div>
+                                <div class="text-[11px] text-charcoal-muted font-medium">Jam</div>
+                            </div>
+                            <div class="bg-cream rounded-xl px-3 py-2.5 border border-beige-dark/50 min-w-[72px]">
+                                <div id="cd-minutes" class="font-romantic text-2xl sm:text-3xl font-bold text-softpink-accent tabular-nums">0</div>
+                                <div class="text-[11px] text-charcoal-muted font-medium">Menit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 Financial Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Total Target Budget -->
+                <div class="bg-white rounded-3xl p-5 border border-beige-dark/60 shadow-card hover:shadow-soft transition-all">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-charcoal-muted">Target Budget</span>
+                        <div class="w-9 h-9 rounded-2xl bg-beige flex items-center justify-center text-charcoal">
+                            <i data-lucide="target" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div id="dash-total-budget" class="text-xl sm:text-2xl font-bold text-charcoal tabular-nums">Rp 0</div>
+                    <p class="text-xs text-charcoal-muted mt-1.5 flex items-center gap-1">
+                        <span>Dari 13 kategori anggaran</span>
+                    </p>
+                </div>
+
+                <!-- Total Pengeluaran Tercatat -->
+                <div class="bg-white rounded-3xl p-5 border border-beige-dark/60 shadow-card hover:shadow-soft transition-all">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-charcoal-muted">Sudah Dikeluarkan</span>
+                        <div class="w-9 h-9 rounded-2xl bg-softpink-light flex items-center justify-center text-softpink-accent">
+                            <i data-lucide="wallet" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div id="dash-total-spent" class="text-xl sm:text-2xl font-bold text-charcoal tabular-nums">Rp 0</div>
+                    <p id="dash-committed-note" class="text-xs text-charcoal-muted mt-1.5">
+                        Status DP & Lunas
+                    </p>
+                </div>
+
+                <!-- Total Uang Terkumpul -->
+                <div class="bg-white rounded-3xl p-5 border border-beige-dark/60 shadow-card hover:shadow-soft transition-all">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-charcoal-muted">Tabungan Terkumpul</span>
+                        <div class="w-9 h-9 rounded-2xl bg-sage-light flex items-center justify-center text-sage-dark">
+                            <i data-lucide="piggy-bank" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div id="dash-total-saved" class="text-xl sm:text-2xl font-bold text-sage-dark tabular-nums">Rp 0</div>
+                    <p id="dash-saved-target-note" class="text-xs text-charcoal-muted mt-1.5">
+                        Target: Rp 0
+                    </p>
+                </div>
+
+                <!-- Sisa Budget Tersedia -->
+                <div class="bg-white rounded-3xl p-5 border border-beige-dark/60 shadow-card hover:shadow-soft transition-all">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-charcoal-muted">Sisa Budget</span>
+                        <div class="w-9 h-9 rounded-2xl bg-cream border border-beige-dark flex items-center justify-center text-charcoal">
+                            <i data-lucide="coins" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    <div id="dash-remaining-budget" class="text-xl sm:text-2xl font-bold text-charcoal tabular-nums">Rp 0</div>
+                    <p id="dash-budget-usage-pct" class="text-xs text-charcoal-muted mt-1.5">
+                        0% anggaran terpakai
+                    </p>
+                </div>
+            </div>
+
+            <!-- Savings Progress & Visual Breakdown Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Left Column: Savings Progress & Payment Status (7 cols) -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Visual Progress Bar Tabungan Pernikahan -->
+                    <div class="bg-white rounded-3xl p-6 border border-beige-dark/60 shadow-card">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                            <div>
+                                <h3 class="font-romantic text-2xl font-bold text-charcoal">Progres Tabungan Pernikahan</h3>
+                                <p class="text-xs text-charcoal-muted">Akumulasi dana bersama menuju target pernikahan</p>
+                            </div>
+                            <span id="dash-savings-pct-badge"
+                                class="px-3.5 py-1.5 rounded-full bg-sage-light text-sage-dark font-bold text-sm tabular-nums">
+                                0%
+                            </span>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="w-full h-5 bg-beige rounded-full overflow-hidden p-1 border border-beige-dark/40">
+                            <div id="dash-savings-bar"
+                                class="h-full rounded-full bg-gradient-to-r from-softpink-dark via-softpink-accent to-sage transition-all duration-700"
+                                style="width: 0%"></div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs mt-3 text-charcoal-muted">
+                            <span>Terkumpul: <strong id="dash-bar-current" class="text-charcoal">Rp 0</strong></span>
+                            <span>Target: <strong id="dash-bar-target" class="text-charcoal">Rp 0</strong></span>
+                        </div>
+
+                        <!-- Quick Contribution Split -->
+                        <div class="mt-5 pt-4 border-t border-beige flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-4 text-xs">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-sage"></span>
+                                    <span id="dash-label-p1">Saya</span>: <strong id="dash-val-p1" class="text-charcoal">Rp 0</strong>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-softpink-accent"></span>
+                                    <span id="dash-label-p2">Pasangan</span>: <strong id="dash-val-p2" class="text-charcoal">Rp 0</strong>
+                                </div>
+                            </div>
+                            <button onclick="switchTab('savings')"
+                                class="text-xs font-semibold text-sage-dark hover:underline flex items-center gap-1">
+                                Tambah Setoran <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Top Categories Breakdown -->
+                    <div class="bg-white rounded-3xl p-6 border border-beige-dark/60 shadow-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-romantic text-2xl font-bold text-charcoal">Distribusi Anggaran Terbesar</h3>
+                                <p class="text-xs text-charcoal-muted">Perbandingan realisasi pengeluaran pada kategori utama</p>
+                            </div>
+                            <button onclick="switchTab('budgeting')"
+                                class="text-xs font-semibold text-sage-dark hover:underline">
+                                Lihat Semua (13)
+                            </button>
+                        </div>
+                        <div id="dash-top-categories" class="space-y-4">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Payment Status & Recent Transactions (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- Status Pembayaran Summary -->
+                    <div class="bg-white rounded-3xl p-6 border border-beige-dark/60 shadow-card">
+                        <h3 class="font-romantic text-2xl font-bold text-charcoal mb-1">Status Pembayaran Vendor</h3>
+                        <p class="text-xs text-charcoal-muted mb-4">Ringkasan seluruh transaksi yang tercatat</p>
+
+                        <div class="grid grid-cols-3 gap-2.5 text-center">
+                            <div class="p-3 rounded-2xl bg-sage-light/70 border border-sage/20">
+                                <span class="text-[11px] font-semibold text-sage-dark uppercase">Lunas</span>
+                                <div id="stat-count-lunas" class="text-lg font-bold text-charcoal mt-0.5">0</div>
+                                <div id="stat-sum-lunas" class="text-[11px] text-charcoal-muted truncate">Rp 0</div>
+                            </div>
+                            <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200/70">
+                                <span class="text-[11px] font-semibold text-amber-700 uppercase">DP</span>
+                                <div id="stat-count-dp" class="text-lg font-bold text-charcoal mt-0.5">0</div>
+                                <div id="stat-sum-dp" class="text-[11px] text-charcoal-muted truncate">Rp 0</div>
+                            </div>
+                            <div class="p-3 rounded-2xl bg-softpink-light border border-softpink">
+                                <span class="text-[11px] font-semibold text-softpink-accent uppercase">Belum</span>
+                                <div id="stat-count-belum" class="text-lg font-bold text-charcoal mt-0.5">0</div>
+                                <div id="stat-sum-belum" class="text-[11px] text-charcoal-muted truncate">Rp 0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaksi Terbaru -->
+                    <div class="bg-white rounded-3xl p-6 border border-beige-dark/60 shadow-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-romantic text-2xl font-bold text-charcoal">Transaksi Terbaru</h3>
+                            <button onclick="openTransactionModal()"
+                                class="px-3 py-1.5 rounded-xl bg-sage text-white text-xs font-medium hover:bg-sage-dark transition flex items-center gap-1">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Catat
+                            </button>
+                        </div>
+                        <div id="dash-recent-transactions" class="space-y-3">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                        <button onclick="switchTab('transactions')"
+                            class="w-full mt-4 py-2.5 rounded-xl bg-beige/70 hover:bg-beige text-xs font-semibold text-charcoal transition">
+                            Lihat Semua Transaksi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: FITUR BUDGETING (13 KATEGORI) ==================== -->
+        <section id="tab-budgeting" class="tab-content hidden space-y-6">
+            <!-- Header & Summary Strip -->
+            <div class="bg-white rounded-3xl p-6 border border-beige-dark/60 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-romantic text-3xl font-bold text-charcoal">Rencana Anggaran Pernikahan</h2>
+                    <p class="text-sm text-charcoal-muted">Kelola alokasi dana untuk 13 pos kebutuhan pernikahan Anda. Klik nominal rencana untuk mengubah.</p>
+                </div>
+                <div class="flex items-center gap-3 bg-cream px-4 py-3 rounded-2xl border border-beige-dark/60">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider text-charcoal-muted block">Total Rencana Anggaran</span>
+                        <span id="budget-page-total" class="text-lg font-bold text-sage-dark tabular-nums">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid of 13 Categories -->
+            <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Rendered dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: PENCATATAN TRANSAKSI ==================== -->
+        <section id="tab-transactions" class="tab-content hidden space-y-6">
+            <!-- Top Action Bar -->
+            <div class="bg-white rounded-3xl p-6 border border-beige-dark/60 shadow-card space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-romantic text-3xl font-bold text-charcoal">Catatan Pengeluaran & Vendor</h2>
+                        <p class="text-sm text-charcoal-muted">Catat pembayaran DP, pelunasan, maupun rencana tagihan vendor.</p>
+                    </div>
+                    <button onclick="openTransactionModal()"
+                        class="px-5 py-3 rounded-2xl bg-sage hover:bg-sage-dark text-white font-semibold text-sm shadow-sm transition flex items-center justify-center gap-2 shrink-0">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        Tambah Transaksi
+                    </button>
+                </div>
+
+                <!-- Search & Filters -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-beige">
+                    <!-- Search Input -->
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 text-charcoal-muted absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="filter-search" oninput="renderTransactions()"
+                            placeholder="Cari nama / catatan..."
+                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cream border border-beige-dark/70 text-sm focus:outline-none focus:border-sage">
+                    </div>
+
+                    <!-- Filter Kategori -->
+                    <select id="filter-category" onchange="renderTransactions()"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark/70 text-sm focus:outline-none focus:border-sage">
+                        <option value="ALL">Semua Kategori</option>
+                    </select>
+
+                    <!-- Filter Status -->
+                    <select id="filter-status" onchange="renderTransactions()"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark/70 text-sm focus:outline-none focus:border-sage">
+                        <option value="ALL">Semua Status Bayar</option>
+                        <option value="Lunas">Lunas</option>
+                        <option value="DP">DP (Uang Muka)</option>
+                        <option value="Belum Dibayar">Belum Dibayar</option>
+                    </select>
+
+                    <!-- Filter Sumber Dana -->
+                    <select id="filter-source" onchange="renderTransactions()"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark/70 text-sm focus:outline-none focus:border-sage">
+                        <option value="ALL">Semua Sumber Dana</option>
+                        <option value="Tabungan Bersama">Tabungan Bersama</option>
+                        <option value="Saya">Saya</option>
+                        <option value="Pasangan">Pasangan</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Transaction Summary Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-2 px-2 text-xs text-charcoal-muted">
+                <span id="tx-filtered-count">Menampilkan 0 transaksi</span>
+                <span>Total Nominal Terfilter: <strong id="tx-filtered-sum" class="text-charcoal text-sm">Rp 0</strong></span>
+            </div>
+
+            <!-- Transactions List Container -->
+            <div id="transactions-list" class="space-y-3">
+                <!-- Rendered dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: TABUNGAN BERSAMA ==================== -->
+        <section id="tab-savings" class="tab-content hidden space-y-6">
+
+            <!-- Savings Overview Banner -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-beige-dark/60 shadow-card">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div class="space-y-1">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-sage-dark">
+                            <i data-lucide="heart-handshake" class="w-4 h-4"></i> Dana Masa Depan Kita
+                        </span>
+                        <h2 class="font-romantic text-3xl sm:text-4xl font-bold text-charcoal">
+                            Tabungan Pernikahan Bersama
+                        </h2>
+                        <p class="text-sm text-charcoal-muted">
+                            Transparansi setoran dan progres pencapaian dana pernikahan.
+                        </p>
+                    </div>
+
+                    <!-- Edit Target Controls -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button onclick="openSavingsGoalModal()"
+                            class="px-4 py-2.5 rounded-2xl bg-beige hover:bg-beige-dark/70 text-charcoal text-xs font-semibold transition flex items-center gap-2 border border-beige-dark/50">
+                            <i data-lucide="sliders-horizontal" class="w-4 h-4 text-sage-dark"></i>
+                            Atur Target Tabungan & Setoran
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3 Key Metrics -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                    <div class="p-4 rounded-2xl bg-sage-light/70 border border-sage/20">
+                        <span class="text-xs text-charcoal-muted font-medium">Saldo Tabungan Saat Ini</span>
+                        <div id="sav-current-balance" class="text-2xl font-bold text-sage-dark mt-1 tabular-nums">Rp 0</div>
+                        <span id="sav-net-note" class="text-[11px] text-charcoal-muted block mt-1">Total setoran masuk</span>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-cream border border-beige-dark/60">
+                        <span class="text-xs text-charcoal-muted font-medium">Target Tabungan Pernikahan</span>
+                        <div id="sav-target-amount" class="text-2xl font-bold text-charcoal mt-1 tabular-nums">Rp 0</div>
+                        <span id="sav-pct-text" class="text-[11px] text-sage-dark font-semibold block mt-1">0% tercapai</span>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-softpink-light/70 border border-softpink">
+                        <span class="text-xs text-charcoal-muted font-medium">Sisa Kekurangan Target</span>
+                        <div id="sav-remaining-target" class="text-2xl font-bold text-softpink-accent mt-1 tabular-nums">Rp 0</div>
+                        <span id="sav-monthly-target-note" class="text-[11px] text-charcoal-muted block mt-1">Target rutin: Rp 0/bln</span>
+                    </div>
+                </div>
+
+                <!-- Overall Savings Progress Bar -->
+                <div class="mt-6">
+                    <div class="flex justify-between text-xs font-semibold mb-2">
+                        <span class="text-charcoal">Progres Keseluruhan</span>
+                        <span id="sav-bar-label" class="text-sage-dark">0%</span>
+                    </div>
+                    <div class="w-full h-4 bg-beige rounded-full overflow-hidden p-0.5 border border-beige-dark/40">
+                        <div id="sav-main-bar"
+                            class="h-full rounded-full bg-gradient-to-r from-sage to-softpink-accent transition-all duration-700"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Couple Contribution Comparison -->
+                <div class="mt-8 pt-6 border-t border-beige">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-romantic text-xl font-bold text-charcoal">Perbandingan Kontribusi Pasangan</h3>
+                        <span class="text-xs text-charcoal-muted">Berdasarkan total setoran</span>
+                    </div>
+
+                    <!-- Dual Color Comparison Bar -->
+                    <div class="w-full h-4 bg-beige rounded-full overflow-hidden flex">
+                        <div id="contrib-bar-p1" class="h-full bg-sage transition-all duration-500" style="width: 50%"></div>
+                        <div id="contrib-bar-p2" class="h-full bg-softpink-accent transition-all duration-500" style="width: 50%"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mt-3">
+                        <div class="flex items-center justify-between p-3 rounded-2xl bg-cream border border-beige-dark/50">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-3.5 h-3.5 rounded-full bg-sage shrink-0"></span>
+                                <div>
+                                    <div id="sav-name-p1" class="text-xs font-bold text-charcoal">Saya</div>
+                                    <div id="sav-amount-p1" class="text-sm font-semibold text-sage-dark tabular-nums">Rp 0</div>
+                                </div>
+                            </div>
+                            <span id="sav-pct-p1" class="text-xs font-bold px-2 py-1 rounded-lg bg-sage-light text-sage-dark">0%</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 rounded-2xl bg-cream border border-beige-dark/50">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-3.5 h-3.5 rounded-full bg-softpink-accent shrink-0"></span>
+                                <div>
+                                    <div id="sav-name-p2" class="text-xs font-bold text-charcoal">Pasangan</div>
+                                    <div id="sav-amount-p2" class="text-sm font-semibold text-softpink-accent tabular-nums">Rp 0</div>
+                                </div>
+                            </div>
+                            <span id="sav-pct-p2" class="text-xs font-bold px-2 py-1 rounded-lg bg-softpink-light text-softpink-accent">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Tambah Setoran & Riwayat Setoran -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Form Input Setoran (5 cols) -->
+                <div class="lg:col-span-5">
+                    <form id="form-deposit" onsubmit="handleDepositSubmit(event)"
+                        class="bg-white rounded-3xl p-6 border border-beige-dark/60 shadow-card space-y-4 sticky top-24">
+                        <div class="flex items-center gap-2.5 mb-1">
+                            <div class="w-9 h-9 rounded-2xl bg-softpink-light flex items-center justify-center text-softpink-accent">
+                                <i data-lucide="plus" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-romantic text-2xl font-bold text-charcoal">Catat Setoran Baru</h3>
+                                <p class="text-xs text-charcoal-muted">Tambahkan tabungan dari Saya atau Pasangan</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-charcoal mb-1.5">Penyetor</label>
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="depositor" value="Saya" checked class="peer sr-only">
+                                    <div id="radio-label-p1"
+                                        class="p-3 rounded-xl border border-beige-dark bg-cream text-center text-sm font-semibold text-charcoal peer-checked:bg-sage peer-checked:text-white peer-checked:border-sage transition">
+                                        Saya
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="depositor" value="Pasangan" class="peer sr-only">
+                                    <div id="radio-label-p2"
+                                        class="p-3 rounded-xl border border-beige-dark bg-cream text-center text-sm font-semibold text-charcoal peer-checked:bg-softpink-accent peer-checked:text-white peer-checked:border-softpink-accent transition">
+                                        Pasangan
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="dep-amount" class="block text-xs font-semibold text-charcoal mb-1.5">Nominal Setoran (Rp)</label>
+                            <input type="number" id="dep-amount" required min="1000" step="1000"
+                                placeholder="Contoh: 2500000"
+                                class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark/70 text-sm font-semibold focus:outline-none focus:border-sage">
+                        </div>
+
+                        <div>
+                            <label for="dep-date" class="block text-xs font-semibold text-charcoal mb-1.5">Tanggal Setor</label>
+                            <input type="date" id="dep-date" required
+                                class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark/70 text-sm focus:outline-none focus:border-sage">
+                        </div>
+
+                        <div>
+                            <label for="dep-note" class="block text-xs font-semibold text-charcoal mb-1.5">Catatan (Opsional)</label>
+                            <input type="text" id="dep-note" placeholder="Misal: Tabungan rutin bulan ini / Bonus"
+                                class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark/70 text-sm focus:outline-none focus:border-sage">
+                        </div>
+
+                        <button type="submit"
+                            class="w-full py-3 rounded-2xl bg-sage hover:bg-sage-dark text-white font-semibold text-sm shadow-sm transition flex items-center justify-center gap-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                            Simpan Setoran
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Riwayat Setoran (7 cols) -->
+                <div class="lg:col-span-7">
+                    <div class="bg-white rounded-3xl p-6 border border-beige-dark/60 shadow-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-romantic text-2xl font-bold text-charcoal">Riwayat Setoran Tabungan</h3>
+                                <p class="text-xs text-charcoal-muted">Catatan seluruh dana yang telah disetorkan</p>
+                            </div>
+                            <span id="dep-history-count"
+                                class="px-3 py-1 rounded-full bg-beige text-xs font-semibold text-charcoal">
+                                0 Setoran
+                            </span>
+                        </div>
+
+                        <div id="deposits-list" class="space-y-3">
+                            <!-- Rendered dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (Mobile Only) -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-beige-dark/70 px-2 py-2 shadow-lg">
+        <div class="grid grid-cols-4 gap-1">
+            <button onclick="switchTab('dashboard')" data-tab="dashboard"
+                class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-[11px] font-medium transition">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+                <span>Ringkasan</span>
+            </button>
+            <button onclick="switchTab('budgeting')" data-tab="budgeting"
+                class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-[11px] font-medium transition">
+                <i data-lucide="pie-chart" class="w-5 h-5 mb-0.5"></i>
+                <span>Anggaran</span>
+            </button>
+            <button onclick="switchTab('transactions')" data-tab="transactions"
+                class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-[11px] font-medium transition">
+                <i data-lucide="receipt" class="w-5 h-5 mb-0.5"></i>
+                <span>Transaksi</span>
+            </button>
+            <button onclick="switchTab('savings')" data-tab="savings"
+                class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-[11px] font-medium transition">
+                <i data-lucide="piggy-bank" class="w-5 h-5 mb-0.5"></i>
+                <span>Tabungan</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Modal 1: Tambah / Edit Transaksi -->
+    <div id="modal-transaction" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-charcoal/40 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 border border-beige-dark shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-beige">
+                <h3 id="modal-tx-title" class="font-romantic text-2xl font-bold text-charcoal">Tambah Transaksi Baru</h3>
+                <button onclick="closeModal('modal-transaction')" class="p-2 rounded-full hover:bg-beige text-charcoal-muted">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="form-transaction" onsubmit="handleTransactionSubmit(event)" class="space-y-4 mt-4">
+                <input type="hidden" id="tx-id">
+
+                <div>
+                    <label for="tx-name" class="block text-xs font-semibold text-charcoal mb-1">Nama Transaksi *</label>
+                    <input type="text" id="tx-name" required placeholder="Contoh: DP Gedung & Dekorasi Pelaminan"
+                        class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark/80 text-sm focus:outline-none focus:border-sage">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="tx-category" class="block text-xs font-semibold text-charcoal mb-1">Kategori *</label>
+                        <select id="tx-category" required
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark/80 text-sm focus:outline-none focus:border-sage">
+                            <!-- Populated dynamically by JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tx-amount" class="block text-xs font-semibold text-charcoal mb-1">Nominal (Rp) *</label>
+                        <input type="number" id="tx-amount" required min="0" step="1000" placeholder="5000000"
+                            class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark/80 text-sm font-semibold focus:outline-none focus:border-sage">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="tx-date" class="block text-xs font-semibold text-charcoal mb-1">Tanggal *</label>
+                        <input type="date" id="tx-date" required
+                            class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark/80 text-sm focus:outline-none focus:border-sage">
+                    </div>
+                    <div>
+                        <label for="tx-status" class="block text-xs font-semibold text-charcoal mb-1">Status Pembayaran *</label>
+                        <select id="tx-status" required
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark/80 text-sm focus:outline-none focus:border-sage">
+                            <option value="Lunas">Lunas</option>
+                            <option value="DP">DP (Uang Muka)</option>
+                            <option value="Belum Dibayar">Belum Dibayar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="tx-source" class="block text-xs font-semibold text-charcoal mb-1">Sumber Dana *</label>
+                    <select id="tx-source" required
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark/80 text-sm focus:outline-none focus:border-sage">
+                        <option value="Tabungan Bersama">Tabungan Bersama</option>
+                        <option value="Saya">Saya</option>
+                        <option value="Pasangan">Pasangan</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="tx-notes" class="block text-xs font-semibold text-charcoal mb-1">Catatan Tambahan</label>
+                    <textarea id="tx-notes" rows="2" placeholder="Nama vendor, kontak PIC, atau jadwal pelunasan..."
+                        class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark/80 text-sm focus:outline-none focus:border-sage"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-beige">
+                    <button type="button" onclick="closeModal('modal-transaction')"
+                        class="px-4 py-2.5 rounded-xl bg-beige hover:bg-beige-dark/70 text-sm font-semibold text-charcoal transition">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-sage hover:bg-sage-dark text-white text-sm font-semibold transition">
+                        Simpan Transaksi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Edit Budget Kategori -->
+    <div id="modal-edit-budget" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-charcoal/40 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 border border-beige-dark shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-beige">
+                <h3 class="font-romantic text-2xl font-bold text-charcoal">Atur Rencana Anggaran</h3>
+                <button onclick="closeModal('modal-edit-budget')" class="p-2 rounded-full hover:bg-beige text-charcoal-muted">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form onsubmit="handleEditBudgetSubmit(event)" class="space-y-4 mt-4">
+                <input type="hidden" id="edit-cat-id">
+                <div>
+                    <span class="text-xs text-charcoal-muted">Kategori</span>
+                    <div id="edit-cat-name" class="text-base font-bold text-charcoal">Venue dan dekorasi</div>
+                </div>
+                <div>
+                    <label for="edit-cat-amount" class="block text-xs font-semibold text-charcoal mb-1">Nominal Budget Direncanakan (Rp)</label>
+                    <input type="number" id="edit-cat-amount" required min="0" step="50000"
+                        class="w-full px-4 py-3 rounded-xl bg-cream border border-beige-dark text-base font-bold text-sage-dark focus:outline-none focus:border-sage">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-edit-budget')"
+                        class="px-4 py-2.5 rounded-xl bg-beige text-sm font-semibold">Batal</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-sage text-white text-sm font-semibold hover:bg-sage-dark">Simpan Budget</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Target Tabungan & Setoran Rutin -->
+    <div id="modal-savings-goal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-charcoal/40 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 border border-beige-dark shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-beige">
+                <h3 class="font-romantic text-2xl font-bold text-charcoal">Target Tabungan Bersama</h3>
+                <button onclick="closeModal('modal-savings-goal')" class="p-2 rounded-full hover:bg-beige text-charcoal-muted">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSavingsGoalSubmit(event)" class="space-y-4 mt-4">
+                <div>
+                    <label for="input-savings-target" class="block text-xs font-semibold text-charcoal mb-1">Target Total Tabungan (Rp)</label>
+                    <input type="number" id="input-savings-target" required min="0" step="500000"
+                        class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark text-sm font-bold focus:outline-none focus:border-sage">
+                </div>
+                <div>
+                    <label for="input-monthly-target" class="block text-xs font-semibold text-charcoal mb-1">Target Setoran Rutin Bulanan (Rp)</label>
+                    <input type="number" id="input-monthly-target" required min="0" step="100000"
+                        class="w-full px-4 py-2.5 rounded-xl bg-cream border border-beige-dark text-sm font-bold focus:outline-none focus:border-sage">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-savings-goal')"
+                        class="px-4 py-2.5 rounded-xl bg-beige text-sm font-semibold">Batal</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-sage text-white text-sm font-semibold hover:bg-sage-dark">Simpan Target</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Pengaturan Pasangan & Reset Data -->
+    <div id="modal-settings" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-charcoal/40 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 border border-beige-dark shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-beige">
+                <h3 class="font-romantic text-2xl font-bold text-charcoal">Pengaturan Pernikahan</h3>
+                <button onclick="closeModal('modal-settings')" class="p-2 rounded-full hover:bg-beige text-charcoal-muted">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleSettingsSubmit(event)" class="space-y-4 mt-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="set-p1-name" class="block text-xs font-semibold text-charcoal mb-1">Nama Saya</label>
+                        <input type="text" id="set-p1-name" required placeholder="Naya"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark text-sm focus:outline-none focus:border-sage">
+                    </div>
+                    <div>
+                        <label for="set-p2-name" class="block text-xs font-semibold text-charcoal mb-1">Nama Pasangan</label>
+                        <input type="text" id="set-p2-name" required placeholder="Arka"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark text-sm focus:outline-none focus:border-sage">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="set-wedding-date" class="block text-xs font-semibold text-charcoal mb-1">Tanggal & Waktu Pernikahan</label>
+                    <input type="datetime-local" id="set-wedding-date" required
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark text-sm focus:outline-none focus:border-sage">
+                </div>
+
+                <div>
+                    <label for="set-location" class="block text-xs font-semibold text-charcoal mb-1">Kota / Lokasi Acara</label>
+                    <input type="text" id="set-location" placeholder="Jakarta"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-cream border border-beige-dark text-sm focus:outline-none focus:border-sage">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-settings')"
+                        class="px-4 py-2.5 rounded-xl bg-beige text-sm font-semibold">Batal</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-sage text-white text-sm font-semibold hover:bg-sage-dark">Simpan Perubahan</button>
+                </div>
+            </form>
+
+            <!-- Data Management Section -->
+            <div class="mt-6 pt-5 border-t border-beige space-y-2.5">
+                <span class="block text-xs font-semibold text-charcoal-muted uppercase tracking-wider">Manajemen Data</span>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <button type="button" onclick="resetToDummyData()"
+                        class="flex-1 py-2.5 px-3 rounded-xl bg-cream hover:bg-beige border border-beige-dark text-xs font-semibold text-charcoal transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Muat Data Contoh
+                    </button>
+                    <button type="button" onclick="clearAllData()"
+                        class="flex-1 py-2.5 px-3 rounded-xl bg-softpink-light hover:bg-softpink border border-softpink-dark text-xs font-semibold text-red-700 transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Kosongkan Semua
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal (Replaces window.confirm) -->
+    <div id="modal-confirm" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-charcoal/40 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 border border-beige-dark shadow-2xl text-center">
+            <div class="w-12 h-12 rounded-full bg-softpink-light text-softpink-accent flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="alert-circle" class="w-6 h-6"></i>
+            </div>
+            <h4 id="confirm-title" class="font-romantic text-2xl font-bold text-charcoal">Konfirmasi</h4>
+            <p id="confirm-message" class="text-sm text-charcoal-muted mt-1 mb-5">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+            <div class="flex gap-2.5">
+                <button onclick="closeModal('modal-confirm')"
+                    class="flex-1 py-2.5 rounded-xl bg-beige hover:bg-beige-dark/70 text-sm font-semibold text-charcoal transition">Batal</button>
+                <button id="confirm-yes-btn"
+                    class="flex-1 py-2.5 rounded-xl bg-softpink-accent hover:opacity-90 text-white text-sm font-semibold transition">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application JavaScript Logic -->
+    <script src="app.js"></script>
+</body>
+
+</html>

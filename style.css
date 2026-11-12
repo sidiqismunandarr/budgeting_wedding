@@ -1,0 +1,129 @@
+/* ==========================================================================
+   Our Wedding Budget — Custom Stylesheet (style.css)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design Tokens & CSS Variables
+   -------------------------------------------------------------------------- */
+:root {
+    --color-cream: #FDFBF7;
+    --color-beige: #F5EFE6;
+    --color-beige-dark: #EAE0D2;
+    --color-softpink-light: #FAF0F1;
+    --color-softpink: #F4D9DC;
+    --color-softpink-dark: #E8B4B8;
+    --color-softpink-accent: #C98A90;
+    --color-sage-light: #EFF2EE;
+    --color-sage: #8A9A86;
+    --color-sage-dark: #6B7E67;
+    --color-charcoal: #2D312E;
+    --color-charcoal-muted: #646B66;
+}
+
+/* --------------------------------------------------------------------------
+   2. Base & Global Styles
+   -------------------------------------------------------------------------- */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-cream);
+    color: var(--color-charcoal);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Romantic Serif Typography for Headings */
+.font-romantic {
+    font-family: 'Cormorant Garamond', Georgia, Cambria, 'Times New Roman', serif;
+}
+
+/* Number tabular alignment for financial amounts */
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   3. Custom Minimalist Scrollbar
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-cream);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-beige-dark);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-sage);
+}
+
+/* --------------------------------------------------------------------------
+   4. Animations & Transitions
+   -------------------------------------------------------------------------- */
+.tab-content {
+    animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   5. Subtle Wedding Texture / Pattern
+   -------------------------------------------------------------------------- */
+.bg-wedding-pattern {
+    background-image: 
+        radial-gradient(var(--color-softpink-dark) 0.6px, transparent 0.6px), 
+        radial-gradient(var(--color-sage) 0.6px, var(--color-cream) 0.6px);
+    background-size: 32px 32px;
+    background-position: 0 0, 16px 16px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Modal & Overlay Refinements
+   -------------------------------------------------------------------------- */
+.backdrop-blur-xs {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+/* --------------------------------------------------------------------------
+   7. Print Styles (Export / Cetak Anggaran)
+   -------------------------------------------------------------------------- */
+@media print {
+    header,
+    nav,
+    button,
+    #toast-container,
+    .modal {
+        display: none !important;
+    }
+
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+
+    .tab-content {
+        display: block !important;
+        animation: none !important;
+    }
+}
+
